@@ -1,8 +1,12 @@
 FROM node:lts-alpine AS builder
 
-COPY kiwiirc /tmp/kiwiirc
+ARG VERSION
 
-RUN cd /tmp/kiwiirc \
+RUN apk add --update --no-cache git \
+ && cd /tmp \
+ && git clone -n https://github.com/kiwiirc/kiwiirc.git \
+ && cd kiwiirc \
+ && git checkout ${VERSION} \
  && yarn install \
  && yarn run build
 

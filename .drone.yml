@@ -10,16 +10,13 @@ steps:
     detach: true
     command: [ "dockerd", "--host=tcp://0.0.0.0:2375" ]
 
-  - name: source
+  - name: version
     image: alpine:3.13
     commands:
     - apk add --update --no-cache curl git jq
     - LATEST=$(curl -s https://api.github.com/repos/kiwiirc/kiwiirc/tags | jq -r '.[0].name')
     - if curl -sfL https://hub.docker.com/v2/repositories/ezkrg/kiwiirc/tags/$LATEST > /dev/null; then echo "tag $LATEST already exist"; exit 78; fi
     - echo -n "$LATEST" > .tag
-    - git clone -n https://github.com/kiwiirc/kiwiirc.git
-    - cd kiwiirc
-    - git checkout $LATEST
 
   - name: build
     image: ezkrg/buildx:latest
@@ -34,12 +31,12 @@ steps:
     - TAG=$(cat .tag)
     - docker buildx create --use --name docker --node docker --platform linux/amd64 --driver docker-container $DOCKER_HOST
     - echo $PASSWORD | docker login --username $USER --password-stdin
-    - docker buildx build --load --cache-from ezkrg/cache:kiwiirc --cache-to ezkrg/cache:kiwiirc -t ezkrg/kiwiirc:$TAG .
+    - docker buildx build --load --cache-from ezkrg/cache:kiwiirc --cache-to ezkrg/cache:kiwiirc -t ezkrg/kiwiirc:$TAG --build-arg VERSION=$TAGs .
     - docker push ezkrg/kiwiirc:$TAG
     - docker tag ezkrg/kiwiirc:$TAG ezkrg/kiwiirc:latest
     - docker push ezkrg/kiwiirc:latest
 ---
 kind: signature
-hmac: 944f7a07a46228394800eadd9fad35eda6c6b728c6049936a9af91f1b5e53ff0
+hmac: fb22cb5d1c4c5c8bf0e1cfc1c68ebe9e0363ca292e5fcd27c2bc2570733d9b1b
 
 ...
