@@ -31,12 +31,12 @@ steps:
     - TAG=$(cat .tag)
     - docker buildx create --use --name docker --node docker --platform linux/amd64 --driver docker-container $DOCKER_HOST
     - echo $PASSWORD | docker login --username $USER --password-stdin
-    - docker buildx build --load --cache-from ezkrg/cache:kiwiirc --cache-to ezkrg/cache:kiwiirc -t ezkrg/kiwiirc:$TAG --build-arg VERSION=$TAGs .
+    - docker buildx build --load --cache-from ezkrg/cache:kiwiirc --cache-to ezkrg/cache:kiwiirc -t ezkrg/kiwiirc:$TAG --build-arg VERSION=$TAG .
     - docker push ezkrg/kiwiirc:$TAG
     - docker tag ezkrg/kiwiirc:$TAG ezkrg/kiwiirc:latest
     - docker push ezkrg/kiwiirc:latest
 ---
 kind: signature
-hmac: 1ff289f65f8752702fc59168a17c5b05e88a762aa51f6679f8acdaf185b740bb
+hmac: 71904553de26f30f570b44fd1b76639b5e0781aa74a9457ad0012cf2d5e0b0fb
 
 ...
