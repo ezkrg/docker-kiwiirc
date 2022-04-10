@@ -2,7 +2,7 @@ FROM node:lts-alpine AS builder
 
 ARG VERSION
 
-RUN apk add --update --no-cache git \
+RUN apk add --update --no-cache git python3 make g++ \
  && cd /tmp \
  && git clone -n https://github.com/kiwiirc/kiwiirc.git \
  && cd kiwiirc \
